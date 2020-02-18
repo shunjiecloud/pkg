@@ -3,7 +3,7 @@ package app
 import (
 	"net/http"
 
-	ec "github.com/shunjieyun/account/errcode"
+	ec "github.com/shunjieyun/common/errcode"
 	"github.com/shunjieyun/errors"
 )
 
