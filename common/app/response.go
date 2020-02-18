@@ -3,8 +3,8 @@ package app
 import (
 	"net/http"
 
-	ec "github.com/shunjieyun/common/errcode"
 	"github.com/shunjieyun/errors"
+	ec "github.com/shunjieyun/pkg/common/errcode"
 )
 
 //  OkResponse
