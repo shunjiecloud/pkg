@@ -1,3 +1,3 @@
 # pkg
 public packages
-瞬捷云-公用包
+瞬捷云 公用代码库
