@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	merr "github.com/micro/go-micro/v2/errors"
 	"github.com/shunjiecloud/errors"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 //  OkResponse

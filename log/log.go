@@ -47,3 +47,11 @@ func Error(err *errors.Error) {
 func Info(msg string, fields ...zap.Field) {
 	defaultLogger.Info(msg, fields...)
 }
+
+func WarnString(msg string, fields ...zap.Field) {
+	defaultLogger.Warn(msg, fields...)
+}
+
+func ErrorString(msg string, fields ...zap.Field) {
+	defaultLogger.Error(msg, fields...)
+}
