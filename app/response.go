@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	merr "github.com/micro/go-micro/v2/errors"
 	"github.com/shunjiecloud/errors"
-	ec "github.com/shunjiecloud/pkg/errcode"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -32,42 +32,46 @@ type ErrorResponse struct {
 }
 
 func (appCtx *AppContext) WriteError(in error) {
-	in = errors.Adapt(in)
 	var httpCode int
-	httpCode = http.StatusInternalServerError
 	var resp ErrorResponse
-	//  是否为*errors.Error
-	err, isOk := in.(*errors.Error)
-	if isOk == true {
-		innerError := err.Err
-		switch innerError.(type) {
-		case ec.Error:
-			//  内部含有code.Error
-			resp.Msg = innerError.(ec.Error).Message()
-			httpCode = innerError.(ec.Error).HttpCode
-		case validator.ValidationErrors:
-			httpCode = http.StatusBadRequest
-		default:
-		}
-		//  externs
-		externs := make([]string, 0)
-		for _, f := range err.Fields {
-			externs = append(externs, fmt.Sprintf("%v:%v", f.Key, f.String))
-		}
-		//  pos
-		pos := make([]string, 0)
-		for _, f := range err.StackFrames() {
-			pos = append(pos, fmt.Sprintf("%v %v", f.File, f.LineNumber))
-		}
-		appCtx.GinCtx.Error(&gin.Error{
-			Err:  innerError,
-			Type: gin.ErrorTypePrivate,
-			Meta: gin.H{
-				"pos":    pos,
-				"extern": externs,
-			},
-		})
+
+	in = errors.Adapt(in)
+	err := in.(*errors.Error)
+	innerError := err.Err
+	switch innerError.(type) {
+	case *merr.Error:
+		//  内部含有*merr.Error
+		resp.Result = innerError.(*merr.Error).Id
+		resp.Msg = innerError.(*merr.Error).Detail
+		httpCode = int(innerError.(*merr.Error).Code)
+	case validator.ValidationErrors:
+		//  内部含有validator错误
+		resp.Result = "request invalid"
+		resp.Msg = innerError.Error()
+		httpCode = http.StatusBadRequest
+	default:
+		resp.Result = "Internal Server Error"
+		resp.Msg = innerError.Error()
+		httpCode = http.StatusInternalServerError
 	}
-	resp.Result = in.Error()
+	//  externs
+	externs := make([]string, 0)
+	for _, f := range err.Fields {
+		externs = append(externs, fmt.Sprintf("%v:%v", f.Key, f.String))
+	}
+	//  pos
+	pos := make([]string, 0)
+	for _, f := range err.StackFrames() {
+		pos = append(pos, fmt.Sprintf("%v %v", f.File, f.LineNumber))
+	}
+	//  保存错误到gin errors
+	appCtx.GinCtx.Error(&gin.Error{
+		Err:  innerError,
+		Type: gin.ErrorTypePrivate,
+		Meta: gin.H{
+			"pos":    pos,
+			"extern": externs,
+		},
+	})
 	appCtx.GinCtx.JSON(httpCode, &resp)
 }
