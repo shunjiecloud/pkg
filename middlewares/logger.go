@@ -84,7 +84,7 @@ func Logger() gin.HandlerFunc {
 				log.ErrorString(result, fieldsEachErr...)
 			} else {
 				// warn
-				log.ErrorString(result, fieldsEachErr...)
+				log.WarnString(result, fieldsEachErr...)
 			}
 		}
 
