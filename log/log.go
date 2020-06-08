@@ -44,8 +44,6 @@ func Error(err *errors.Error) {
 	defaultLogger.Error(err.Error(), err.Fields...)
 }
 
-func Info(err *errors.Error) {
-	//  pos
-	pos(err)
-	defaultLogger.Info(err.Error(), err.Fields...)
+func Info(msg string, fields ...zap.Field) {
+	defaultLogger.Info(msg, fields...)
 }
