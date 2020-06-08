@@ -73,7 +73,10 @@ func Logger() gin.HandlerFunc {
 			//  meta
 			metas := e.Meta.(gin.H)
 			for k, v := range metas {
-				fieldsEachErr = append(fieldsEachErr, zap.String(k, v))
+				s, isOk := v.(string)
+				if isOk == true {
+					fieldsEachErr = append(fieldsEachErr, zap.String(k, s))
+				}
 			}
 
 			//  log error
