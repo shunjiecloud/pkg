@@ -56,16 +56,16 @@ func Logger() gin.HandlerFunc {
 			case *merr.Error:
 				//  innErr为*merr.Error
 				result = innErr.(*merr.Error).Id
-				fieldsEachErr = append(fieldsEachErr, zap.String("msg", innErr.(*merr.Error).Detail))
+				fieldsEachErr = append(fieldsEachErr, zap.String("detail", innErr.(*merr.Error).Detail))
 				httpCode = int(innErr.(*merr.Error).Code)
 			case validator.ValidationErrors:
 				//  innErr为validator错误
 				result = "request invalid"
-				fieldsEachErr = append(fieldsEachErr, zap.String("msg", e.Error()))
+				fieldsEachErr = append(fieldsEachErr, zap.String("detail", e.Error()))
 				httpCode = http.StatusBadRequest
 			default:
 				result = "Internal Server Error"
-				fieldsEachErr = append(fieldsEachErr, zap.String("msg", e.Error()))
+				fieldsEachErr = append(fieldsEachErr, zap.String("detail", e.Error()))
 				httpCode = http.StatusInternalServerError
 			}
 
