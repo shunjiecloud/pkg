@@ -10,7 +10,7 @@ import (
 )
 
 // logWrapper is a handler wrapper
-func logWrapper(fn server.HandlerFunc) server.HandlerFunc {
+func LogWrapper(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, rsp interface{}) error {
 		Info("call endpoint", zap.String("endpoint", req.Endpoint()))
 		err := fn(ctx, req, rsp)
