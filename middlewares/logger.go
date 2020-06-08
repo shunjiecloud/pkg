@@ -72,9 +72,9 @@ func Logger() gin.HandlerFunc {
 			//  meta
 			metas := e.Meta.(gin.H)
 			for k, v := range metas {
-				s, isOk := v.(string)
+				s, isOk := v.([]string)
 				if isOk == true {
-					fieldsEachErr = append(fieldsEachErr, zap.String(k, s))
+					fieldsEachErr = append(fieldsEachErr, zap.Strings(k, s))
 				}
 			}
 
